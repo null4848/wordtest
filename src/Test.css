@@ -1,0 +1,99 @@
+/* Pretendard 폰트 불러오기 */
+@font-face {font-family: 'Pretendard'; src: url('https://cdn.jsdelivr.net/gh/Project-Noonnu/noonfonts_2107@1.1/Pretendard-Thin.woff') format('woff'); font-weight: 100; font-display: swap; }
+@font-face {font-family: 'Pretendard'; src: url('https://cdn.jsdelivr.net/gh/Project-Noonnu/noonfonts_2107@1.1/Pretendard-ExtraLight.woff') format('woff'); font-weight: 200; font-display: swap;}
+@font-face {font-family: 'Pretendard'; src: url('https://cdn.jsdelivr.net/gh/Project-Noonnu/noonfonts_2107@1.1/Pretendard-Light.woff') format('woff'); font-weight: 300; font-display: swap;}
+@font-face {font-family: 'Pretendard'; src: url('https://cdn.jsdelivr.net/gh/Project-Noonnu/noonfonts_2107@1.1/Pretendard-Regular.woff') format('woff'); font-weight: 400; font-display: swap;}
+@font-face {font-family: 'Pretendard'; src: url('https://cdn.jsdelivr.net/gh/Project-Noonnu/noonfonts_2107@1.1/Pretendard-Medium.woff') format('woff'); font-weight: 500; font-display: swap;}
+@font-face {font-family: 'Pretendard'; src: url('https://cdn.jsdelivr.net/gh/Project-Noonnu/noonfonts_2107@1.1/Pretendard-SemiBold.woff') format('woff'); font-weight: 600; font-display: swap;}
+@font-face {font-family: 'Pretendard'; src: url('https://cdn.jsdelivr.net/gh/Project-Noonnu/noonfonts_2107@1.1/Pretendard-Bold.woff') format('woff'); font-weight: 700; font-display: swap;}
+@font-face {font-family: 'Pretendard'; src: url('https://cdn.jsdelivr.net/gh/Project-Noonnu/noonfonts_2107@1.1/Pretendard-ExtraBold.woff') format('woff'); font-weight: 800; font-display: swap;}
+@font-face {font-family: 'Pretendard'; src: url('https://cdn.jsdelivr.net/gh/Project-Noonnu/noonfonts_2107@1.1/Pretendard-Black.woff') format('woff'); font-weight: 900; font-display: swap;}
+
+/* 기본 스타일 초기화 */
+* {
+    margin: auto;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: Pretendard;
+}
+
+strong {
+    padding: 5px;
+}
+
+button {
+  width: 75px;
+  height: 40px;
+  margin: 7px;
+  border: 0cm;
+  border-radius: 12px;
+  color: #fafaf8;
+  background-color: #344b47;
+  text-align: center;
+  font-size: 15px;
+}
+
+.wordtest {
+  width: auto;
+  height: auto;
+}
+
+.testform {
+  display: flex;
+  align-items: center;
+  width: 700px;
+  height: fit-content;
+  flex-direction: column;
+  flex-wrap: wrap;
+  align-content: center;
+  justify-content: center;  
+  gap: 20px;
+  background-color: #fafaf8;
+  border: 1.3px solid #222;
+  padding: 30px;
+  border-radius: 10px;
+}
+
+.wordwrap {
+  display: flex;
+  flex-direction: row;
+align-items: stretch;
+  width: fit-content;
+  height: fit-content;
+}
+
+.questionrap, .answerwrap {
+    width: 320px;
+    height: auto;
+}
+
+.question, .answerinput {
+    width: 270px;
+    height: 50px;
+    margin-bottom: 10px;
+    align-content: center;
+    border-radius: 7px;
+    color: black;
+}
+
+.question {
+    background-color: #fafaf8;
+    border: 1px solid #344b47
+}
+
+.answerinput {
+    background-color: #344b47;
+    border: 1px solid #fafaf8;
+    color: white;
+    padding: 10px;
+    text-align: center;
+}
+
+.scoreBtn, .retryBtn {
+  width: 200px;
+  color: #222;
+  background-color: #fafaf8;
+  border: 1px solid #344b47;
+}
+
+
