@@ -25,10 +25,10 @@ button {
   width: 75px;
   height: 40px;
   margin: 7px;
-  border: 0cm;
+  border: 1px solid #344b47;
   border-radius: 12px;
-  color: #fafaf8;
-  background-color: #344b47;
+  color: #344b47;
+  background-color: #fafaf8;
   text-align: center;
   font-size: 15px;
 }
