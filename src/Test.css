@@ -57,13 +57,18 @@ button {
 .wordwrap {
   display: flex;
   flex-direction: row;
-align-items: stretch;
+  align-items: stretch;
   width: fit-content;
   height: fit-content;
 }
 
-.questionrap, .answerwrap {
-    width: 320px;
+.questionwrap {
+  display: flex;
+  gap: 20px;
+}
+
+.answerwrap {
+    width: auto;
     height: auto;
 }
 
