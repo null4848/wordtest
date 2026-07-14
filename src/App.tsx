@@ -1,5 +1,5 @@
 // import { useState } from 'react'
-import {useNavigate} from 'react-router-dom';
+import {useNavigate} from 'react-router';
 import './App.css'
 
 // import { dummyWords, type WordItem } from './data';

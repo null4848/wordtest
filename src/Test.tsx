@@ -41,10 +41,6 @@ const words = [
 ]
 
 export default function App() {
-  // const [products, setProducts] = useState<WordItem[]>(dummyWords);
-  // const navigate = useNavigate();
-  
-  // const testClick = () => navigate('/test');
 
   return (
     <>
