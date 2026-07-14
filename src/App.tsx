@@ -1,8 +1,6 @@
-// import { useState } from 'react'
-import {useNavigate} from 'react-router-dom';
+import { useState } from 'react'
+import { useNavigate } from 'react-router-dom';
 import './App.css'
-
-// import { dummyWords, type WordItem } from './data';
 
 // 단어 범위
 const ranges = [
@@ -16,7 +14,20 @@ const ranges = [
 export default function App() {
   // 네비게이션 (페이지 이동)
   const navigate = useNavigate();
-  const testClick = () => navigate('/test');
+
+  // 버튼 클릭
+  // 범위, 유형 저장 기본값 지정
+  const [selectedRange, setSelectedRange] = useState(1);
+  const [selectedType, setSelectedType] = useState('word');
+
+  const testClick = () => {
+    navigate('/test', {
+      state: {
+        range : selectedRange,
+        type: selectedType
+      }
+    });
+  };
 
   return (
     <>
@@ -28,7 +39,12 @@ export default function App() {
             {
               // 반복
               ranges.map((range) => (
-                <button className='rangeBtn' key={range.id} >
+                <button 
+                  // 선택된 버튼 active 표시
+                  className={`rangeBtn ${selectedRange === range.id ? 'active' : ''}`}
+                  key={range.id} 
+                  onClick={() => setSelectedRange(range.id)}
+                >
                   {range.title}
                 </button>
               ))
@@ -37,8 +53,21 @@ export default function App() {
           <div className='typewrap'>
             <strong>문제 유형</strong>
             <div className='typeBtn_div'></div>
-            <button className='typeBtn wordBtn'>뜻</button>
-            <button className='typeBtn meaningBtn'>철자</button>
+            
+            <button 
+              className={`typeBtn wordBtn ${selectedType === 'word' ? 'active' : ''}`}
+              onClick={() => setSelectedType('word')}
+            >
+              철자
+            </button>
+
+            <button 
+              className={`typeBtn meaningBtn ${selectedType === 'meaning' ? 'active' : ''}`}
+              onClick={() => setSelectedType('meaning')}
+            >
+              뜻
+            </button>
+
           </div>
           <div className='testwrap'>
             <button 
