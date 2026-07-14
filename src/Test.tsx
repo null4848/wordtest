@@ -1,4 +1,5 @@
 import { useState, Suspense } from 'react';
+import { ErrorBoundary } from 'react-error-boundary';
 import { useLocation } from 'react-router';
 
 // import { useSuspenseAsync } from
@@ -21,15 +22,13 @@ const words: WordItem[] = [
   { id: 4, word: "compliance", meaning: "준수", range: 5 }
 ];
 
+
 function Wordwrap() {
 
   const location = useLocation();
-  console.log(location.state);
-
   const { range, type } = location.state;
 
   const testwords = words.filter((word) => word.range === range);
-  // const testwords = useSuspenseAsync(`testwords-day-${range}-${type}`, () => fetchwords(range, type));
 
   return (
     <>
@@ -61,9 +60,11 @@ export default function App() {
     <>
       <div className='wordtest'>
         <div className='testform'>
-          <Suspense fallback={<div>테스트를 불러오고 있습니다.</div>}>
-            <Wordwrap />
-          </Suspense>
+          <ErrorBoundary fallback={<div>에러가 발생했습니다.</div>}>
+            <Suspense fallback={<div>테스트를 불러오고 있습니다.</div>}>
+              <Wordwrap />
+            </Suspense>
+          </ErrorBoundary>
 
           <div className='scorewrap'>
 
