@@ -59,8 +59,8 @@ function useAsync<T>(asyncFunction: () => Promise<T>) {
       .catch((error) => {
         if (isCurrent) {
           // error가 Error 개체인지 확인, 아니면 Error 개체로 변환
-          const realError = error instanceof Error ? error : new Error(String(error));
-          setResult({ status: "error", error: realError }); // 실패
+          const normalizedError = error instanceof Error ? error : new Error(String(error));
+          setResult({ status: "error", error: normalizedError }); // 실패
         }
       });
 
@@ -80,7 +80,7 @@ function useAsync<T>(asyncFunction: () => Promise<T>) {
 function fetchWords(id: number) {
   const filteredWords = wordsByRangeMap.get(id);
 
-  if (!filteredWords || filteredWords.length === 0) {
+  if (filteredWords == null || filteredWords.length === 0) {
     return Promise.reject(new Error("해당 범위의 단어를 찾을 수 없습니다."));
   }
 
