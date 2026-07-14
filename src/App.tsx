@@ -4,7 +4,7 @@ import './App.css'
 
 // 단어 범위
 const ranges = [
-  { title : 'Day1', id: 1 },
+  { title : 'Day1', id: 1},
   { title : 'Day2', id: 2},
   { title : 'Day3', id: 3},
   { title : 'Day4', id: 4},

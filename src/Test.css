@@ -34,6 +34,11 @@ strong {
   border-radius: 10px;
 }
 
+.result {
+  font-size: 18px;
+  color: #222;
+}
+
 .wordwrap {
   display: flex;
   flex-direction: row;
