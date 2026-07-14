@@ -109,3 +109,23 @@ code {
   padding: 4px 8px;
   background: var(--code-bg);
 }
+
+/* 기본 스타일 초기화 */
+* {
+    margin: auto;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: Pretendard;
+}
+
+button {
+  width: 75px;
+  height: 40px;
+  margin: 7px;
+  border: 0cm;
+  border-radius: 12px;
+  color: #222;
+  background-color: #fafaf8;
+  text-align: center;
+  font-size: 15px;
+}
