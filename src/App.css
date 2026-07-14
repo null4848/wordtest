@@ -1,0 +1,71 @@
+/* Pretendard 폰트 불러오기 */
+@font-face {font-family: 'Pretendard'; src: url('https://cdn.jsdelivr.net/gh/Project-Noonnu/noonfonts_2107@1.1/Pretendard-Thin.woff') format('woff'); font-weight: 100; font-display: swap; }
+@font-face {font-family: 'Pretendard'; src: url('https://cdn.jsdelivr.net/gh/Project-Noonnu/noonfonts_2107@1.1/Pretendard-ExtraLight.woff') format('woff'); font-weight: 200; font-display: swap;}
+@font-face {font-family: 'Pretendard'; src: url('https://cdn.jsdelivr.net/gh/Project-Noonnu/noonfonts_2107@1.1/Pretendard-Light.woff') format('woff'); font-weight: 300; font-display: swap;}
+@font-face {font-family: 'Pretendard'; src: url('https://cdn.jsdelivr.net/gh/Project-Noonnu/noonfonts_2107@1.1/Pretendard-Regular.woff') format('woff'); font-weight: 400; font-display: swap;}
+@font-face {font-family: 'Pretendard'; src: url('https://cdn.jsdelivr.net/gh/Project-Noonnu/noonfonts_2107@1.1/Pretendard-Medium.woff') format('woff'); font-weight: 500; font-display: swap;}
+@font-face {font-family: 'Pretendard'; src: url('https://cdn.jsdelivr.net/gh/Project-Noonnu/noonfonts_2107@1.1/Pretendard-SemiBold.woff') format('woff'); font-weight: 600; font-display: swap;}
+@font-face {font-family: 'Pretendard'; src: url('https://cdn.jsdelivr.net/gh/Project-Noonnu/noonfonts_2107@1.1/Pretendard-Bold.woff') format('woff'); font-weight: 700; font-display: swap;}
+@font-face {font-family: 'Pretendard'; src: url('https://cdn.jsdelivr.net/gh/Project-Noonnu/noonfonts_2107@1.1/Pretendard-ExtraBold.woff') format('woff'); font-weight: 800; font-display: swap;}
+@font-face {font-family: 'Pretendard'; src: url('https://cdn.jsdelivr.net/gh/Project-Noonnu/noonfonts_2107@1.1/Pretendard-Black.woff') format('woff'); font-weight: 900; font-display: swap;}
+
+/* 기본 스타일 초기화 */
+* {
+    margin: auto;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: Pretendard;
+}
+
+button {
+  width: 75px;
+  height: 40px;
+  margin: 7px;
+  border: 0cm;
+  border-radius: 12px;
+  color: #222;
+  background-color: #fafaf8;
+  text-align: center;
+  font-size: 15px;
+}
+
+.wordtest {
+  width: auto;
+  height: auto;
+}
+
+.testform {
+  display: flex;
+  align-items: center;
+  width: 700px;
+  height: fit-content;
+  flex-direction: column;
+  flex-wrap: wrap;
+  align-content: center;
+  justify-content: center;  
+  gap: 20px;
+  background-color: #6dcdbe;
+  padding: 30px;
+  border-radius: 10px;
+}
+
+.rangewrap, .typewrap, .testwrap {
+  width: fit-content;
+  height: fit-content;
+}
+
+strong {
+  display: block;
+  padding-bottom: 12px;
+  color: #344b47;
+  font-size: 18px
+}
+
+.testBtn {
+  width: 200px;
+  color: #344b47;
+  background-color: #fafaf8;
+  border: 1px solid #222
+}
+
+
