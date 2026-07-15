@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useCallback } from 'react';
 import { useLocation } from 'react-router';
 import './Test.css'
 
@@ -93,8 +93,17 @@ function Wordwrap() {
   const location = useLocation();
   const { range, type } = location.state;
 
-  const results = useAsync(() => fetchWords(range));
+  // const results = useAsync(() => fetchWords(range));
   
+  // 함수를 캐싱하는 새로운 함수 선언
+  // useCallback 사용
+  const cachefetchWords = useCallback(() => {
+    return fetchWords(range);
+  }, [range]); // range가 바뀌기 전까지는 캐싱 유지
+  
+  // 캐싱된 함수 전달
+  const results = useAsync(cachefetchWords);
+
   if (results.status === "pending") {
     return <div className='result'>단어 시험을 불러오고 있습니다!</div>;
   }
@@ -117,7 +126,11 @@ function Wordwrap() {
 
               {/* 입력창 */}
               <div className='answerwrap'>
-                <input className='answerinput' name='answerinput' />
+                <input 
+                  className='answerinput' 
+                  name='answerinput'
+                  type = 'text'
+                />
               </div>
             </div>
           ))
@@ -129,12 +142,13 @@ function Wordwrap() {
 
 
 export default function App() {
+  
   return (
     <>
       <div className='wordtest'>
-        <div className='testform'>
+        <form 
+          className='testform'>
           <Wordwrap />
-
           <div className='scorewrap'>
 
             <button 
@@ -142,13 +156,13 @@ export default function App() {
               다시 풀기
             </button>
 
-            <button 
+            <button type='submit' 
               className='scoreBtn'>
               채점
             </button>
 
           </div>
-        </div>
+        </form>
 
       </div>
     </>
