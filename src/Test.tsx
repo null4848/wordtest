@@ -86,6 +86,38 @@ function Resultwrap({ isClicked, score, total }: any) {
   )
 }
 
+// 점수 계산 함수
+const calculateScore = (
+  data: WordItem[],
+  answers: Record<number, string>,
+  type: 'word' | 'meaning'
+): number => {
+
+  // 맞춘 개수
+  let scoreAnswer = 0;
+
+  data.forEach((item) => {
+    // 사용자가 입력한 값 가져오기
+    const userAnswer = (answers[item.id] || "").trim().toLowerCase();
+    
+    // 정답 가져오기
+    // type이 word(철자) word 값 가져오기
+    // type이 word가 아니라면 (meaning) meaning 값 가져오기
+    const correctAnswer = type === 'word' 
+      ? item.word.trim().toLowerCase() 
+      : item.meaning.trim();
+
+    // 사용자가 입력한 값이랑 정답 비교
+    if (userAnswer === correctAnswer) {
+      // 맞춘 개수 ++
+      scoreAnswer++;
+    }
+  });
+
+  // 맞춘 개수 리턴
+  return scoreAnswer;
+};
+
 // 단어 문제 컴포넌트
 function Wordwrap() {
 
@@ -104,8 +136,7 @@ function Wordwrap() {
 
   // 답안 상태 정의
   const [ answers, setAnswers ] = useState<Record<number, string>>({});
-  const [ isClicked, setIsClicked ] = useState<boolean>(false);
-  const [ score, setScore ] = useState<number>(0);
+  const [ isResultVisible , setIsResultVisible ] = useState<boolean>(false);
 
   // result 상태에 따른 리턴값
   if (results.status === "pending") {
@@ -118,44 +149,17 @@ function Wordwrap() {
   
   // 다시 풀기 버튼 클릭 시 이벤트
   const retryClick = () => {
-
     // 초기화
     setAnswers({})
     // 결과창 숨기기
-    setIsClicked(false); 
-    // 점수 초기화
-    setScore(0);
+    setIsResultVisible(false); 
   }
 
   // 채점 버튼 클릭 시
   // 점수 계산 로직
   const handleScore = (event: React.FormEvent) => {
     event.preventDefault(); // 새로고침 방지!
-
-    // 맞춘 개수
-    let scoreAnswer = 0;
-
-    results.data.forEach((item) => {
-      // 사용자가 입력한 값 가져오기
-      const userAnswer = (answers[item.id] || "").toLowerCase();
-      
-      // 정답 가져오기
-      // type이 word(철자) word 값 가져오기
-      // type이 word가 아니라면 (meaning) meaning 값 가져오기
-      const correctAnswer = type === 'word' 
-        ? item.word.toLowerCase() 
-        : item.meaning;
-
-      // 사용자가 입력한 값이랑 정답 비교
-      if (userAnswer === correctAnswer) {
-        // 맞춘 개수 ++ 
-        scoreAnswer++;
-      }    
-    });
-
-    // 계산된 점수, 상태 저장
-    setScore(scoreAnswer);
-    setIsClicked(true);
+    setIsResultVisible(true);
   }
 
   // 개별 input의 글자가 바뀔 때 id에 따라 값을 업데이트하는 함수
@@ -165,6 +169,9 @@ function Wordwrap() {
       [id]: value, // 해당 id의 value만 변경
     }));
   };
+
+  // 함수 이용해서 맞춘 개수 받아오기
+  const score = calculateScore(results.data, answers, type);
 
   return (
     <>
@@ -214,7 +221,7 @@ function Wordwrap() {
         </div>
 
         <Resultwrap 
-          isClicked={isClicked}
+          isClicked={isResultVisible}
           score={score}
           total={results.data.length}
         />
