@@ -1,23 +1,8 @@
 import { useState, useEffect, useCallback } from 'react';
 import { useLocation } from 'react-router';
+import { type WordItem, words } from './data/wordData';
+
 import './Test.css'
-
-// 임시 데이터 정의
-interface WordItem {
-  id: number;
-  word: string;
-  meaning: string;
-  range: number;
-}
-
-// 단어 데이터
-const words: WordItem[] = [
-  { id: 0, word: "resume", meaning: "이력서", range: 1 },
-  { id: 1, word: "prohibit", meaning: "금지하다", range: 2 },
-  { id: 2, word: "corporation", meaning: "주식회사", range: 3 },
-  { id: 3, word: "foster", meaning: "촉진하다", range: 4 },
-  // { id: 4, word: "compliance", meaning: "준수", range: 5 }
-];
 
 // 범위별 단어 맵 생성
 const wordsByRangeMap = words.reduce((map, item) => {
@@ -87,13 +72,123 @@ function fetchWords(id: number) {
   return Promise.resolve(filteredWords);
 }
 
-// 단어 문제 컴포넌트
+// 점수 계산 함수
+const calculateScore = (
+  data: WordItem[],
+  answers: Record<number, string>,
+  type: 'word' | 'meaning'
+): number => {
+
+  // 맞춘 개수
+  let scoreAnswer = 0;
+
+  data.forEach((item) => {
+    // 사용자가 입력한 값 가져오기
+    const userAnswer = (answers[item.id] || "").trim().toLowerCase();
+    
+    // 정답 가져오기
+    // type이 word(철자) word 값 가져오기
+    // type이 word가 아니라면 (meaning) meaning 값 가져오기
+    const correctAnswer = type === 'word' 
+      ? item.word.trim().toLowerCase() 
+      : item.meaning.trim();
+
+    // 사용자가 입력한 값이랑 정답 비교
+    if (userAnswer === correctAnswer) {
+      // 맞춘 개수 ++
+      scoreAnswer++;
+    }
+  });
+
+  // 맞춘 개수 리턴
+  return scoreAnswer;
+};
+
+// 문제 목록 컴포넌트
+function Quizs({ handleInputChange, results, type, answers }: any) {
+  
+  return (
+    <>
+    <div className='wordwrap'>
+      {
+        results.data.map((result: WordItem) => (
+          <div className='questionwrap' key = {result.id}>
+            
+            {/* 문제 */}
+            <div className='question'>
+              {type === 'word' ? result.meaning : result.word}
+            </div>
+
+            {/* 입력창 */}
+            <div className='answerwrap'>
+              <input 
+                className='answerinput' 
+                name={`answerinput-${result.id}`}
+                type = 'text'
+                value={answers[result.id] || ''}
+                onChange={ (event) => handleInputChange(result.id, event.target.value)}
+                />
+            </div>
+          </div>
+        ))
+      }
+    </div>
+    
+    </>
+  )
+}
+
+// 하단 버튼 컴포넌트
+function QuizAction({setAnswers, setIsResultVisible}: any) {
+  
+  // 다시 풀기 버튼 클릭 시 이벤트
+  const retryClick = () => {
+    // 초기화
+    setAnswers({})
+    // 결과창 숨기기
+    setIsResultVisible(false); 
+  }
+  
+  return (
+    <>
+      <button 
+        type='button'
+        className='retryBtn'
+        onClick={retryClick}
+        >
+        다시 풀기
+      </button>
+
+      <button 
+        type='submit' 
+        className='scoreBtn'>
+        채점
+      </button>
+    </>
+  )
+  
+}
+
+// 결과창 컴포넌트
+function Resultwrap({ isClicked, score, total }: any) {
+  if(!isClicked) return null;
+
+  return (
+    <>
+      <div className='resultwrap'>
+        <h3>시험 결과</h3>
+        <p>총 <span>{total}</span>문제 중 <span>{score}</span>문제를 맞추셨습니다!</p>
+      </div>
+    </>
+  )
+}
+
+// 메인 단어어 문제 컴포넌트
 function Wordwrap() {
 
+  // 이전 컴포넌트에서 받아온 값 확인
   const location = useLocation();
   const { range, type } = location.state;
-
-  // const results = useAsync(() => fetchWords(range));
   
   // 함수를 캐싱하는 새로운 함수 선언
   // useCallback 사용
@@ -104,66 +199,81 @@ function Wordwrap() {
   // 캐싱된 함수 전달
   const results = useAsync(cachefetchWords);
 
+    // 답안 상태 정의
+  const [ answers, setAnswers ] = useState<Record<number, string>>({});
+  const [ isResultVisible , setIsResultVisible ] = useState<boolean>(false);
+
+  // result 상태에 따른 리턴값
   if (results.status === "pending") {
     return <div className='result'>단어 시험을 불러오고 있습니다!</div>;
   }
 
   if (results.status === "error") {
     return <div className='result'>{results.error.message}</div>;
+  }  
+  
+  // 채점 버튼 클릭 시
+  // 점수 계산 로직
+  const handleScore = (event: React.FormEvent) => {
+    event.preventDefault(); // 새로고침 방지!
+    setIsResultVisible(true);
   }
+
+  // 함수 이용해서 맞춘 개수 받아오기
+  const score = results.status === "success"
+    ? calculateScore(results.data, answers, type)
+    : 0;
+    
+  // 개별 input의 글자가 바뀔 때 id에 따라 값을 업데이트하는 함수
+  const handleInputChange = (id: number, value: string) => {
+    setAnswers((prev) => ({
+      ...prev,
+      [id]: value, // 해당 id의 value만 변경
+    }));
+  };
 
   return (
     <>
-    <div className='wordwrap'>
-        {
-          results.data.map((result) => (
-            <div className='questionwrap' key = {result.id}>
-              
-              {/* 문제 */}
-              <div className='question'>
-                {type === 'word' ? result.meaning : result.word}
-              </div>
 
-              {/* 입력창 */}
-              <div className='answerwrap'>
-                <input 
-                  className='answerinput' 
-                  name='answerinput'
-                  type = 'text'
-                />
-              </div>
-            </div>
-          ))
-        }
-      </div>
+      <form 
+        className='testform'
+        onSubmit={handleScore}>
+        <div className='scorewrap'>
+
+          {/* 문제 목록 영역 */}
+          <Quizs
+            handleInputChange={handleInputChange}
+            results={results}
+            type={type}
+            answers={answers}
+          />
+
+          {/* 다시 풀기, 채점 버튼 영역 */}
+          <QuizAction
+            setAnswers={setAnswers}
+            setIsResultVisible={setIsResultVisible}
+          />
+
+        </div>
+
+        {/* 결과창 영역 */}
+        <Resultwrap 
+          isClicked={isResultVisible}
+          score={score}
+          total={results.data.length}
+        />
+
+      </form>
+
     </>
   )
 }
 
-
 export default function App() {
-  
   return (
     <>
       <div className='wordtest'>
-        <form 
-          className='testform'>
-          <Wordwrap />
-          <div className='scorewrap'>
-
-            <button 
-              className='retryBtn'>
-              다시 풀기
-            </button>
-
-            <button type='submit' 
-              className='scoreBtn'>
-              채점
-            </button>
-
-          </div>
-        </form>
-
+        <Wordwrap />
       </div>
     </>
   )

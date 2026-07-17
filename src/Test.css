@@ -41,7 +41,7 @@ strong {
 
 .wordwrap {
   display: flex;
-  flex-direction: row;
+  flex-direction: column;
   align-items: stretch;
   width: fit-content;
   height: fit-content;
