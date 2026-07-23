@@ -77,10 +77,12 @@ const calculateScore = (
   data: WordItem[],
   answers: Record<number, string>,
   type: 'word' | 'meaning'
-): number => {
+): { score : number; wrongIds: number[] } => {
 
   // 맞춘 개수
   let scoreAnswer = 0;
+  // 틀린 단어 아이디
+  const wrongIds: number[] = []
 
   data.forEach((item) => {
     // 사용자가 입력한 값 가져오기
@@ -97,40 +99,59 @@ const calculateScore = (
     if (userAnswer === correctAnswer) {
       // 맞춘 개수 ++
       scoreAnswer++;
+    } else {
+      // worngIds에 틀린 단어 id 저장
+      wrongIds.push(item.id)
     }
   });
 
   // 맞춘 개수 리턴
-  return scoreAnswer;
+  return { score : scoreAnswer, wrongIds };
 };
 
 // 문제 목록 컴포넌트
-function Quizs({ handleInputChange, results, type, answers }: any) {
+function Quizs({ handleInputChange, results, type, answers, wrongIds, isResultVisible }: any) {
   
   return (
     <>
     <div className='wordwrap'>
       {
-        results.data.map((result: WordItem) => (
-          <div className='questionwrap' key = {result.id}>
-            
-            {/* 문제 */}
-            <div className='question'>
-              {type === 'word' ? result.meaning : result.word}
-            </div>
+        results.data.map((result: WordItem) => {
+          // 채점 완료, 틀린 목록에 포함된 경우
+          const isWrong = isResultVisible && wrongIds.includes(result.id);
 
-            {/* 입력창 */}
-            <div className='answerwrap'>
-              <input 
-                className='answerinput' 
-                name={`answerinput-${result.id}`}
-                type = 'text'
-                value={answers[result.id] || ''}
-                onChange={ (event) => handleInputChange(result.id, event.target.value)}
-                />
+          // 정답 문구
+          const correctAnswer = type === 'word' ? result.word : result.meaning;
+
+          return (
+            <div className={`questionwrap ${isWrong ? 'wrong' : ''}`} key = {result.id}>              
+             
+              {/* 문제 */}
+              <div className='question'>
+                {type === 'word' ? result.meaning : result.word}
+              </div>
+
+              {/* 입력창 */}
+              <div className='answerwrap'>
+                <input 
+                  className={`answerinput ${isWrong ? 'wronginput' : ''}`}
+                  name={`answerinput-${result.id}`}
+                  type='text'
+                  value={answers[result.id] || ''}
+                  onChange={ (event) => handleInputChange(result.id, event.target.value)}
+                  />
+                
+                {isWrong && (
+                  <div className='correctanswer'>
+                    {correctAnswer}
+                  </div>
+                )}
+              </div>
+
+
             </div>
-          </div>
-        ))
+          )
+        })
       }
     </div>
     
@@ -139,12 +160,14 @@ function Quizs({ handleInputChange, results, type, answers }: any) {
 }
 
 // 하단 버튼 컴포넌트
-function QuizAction({setAnswers, setIsResultVisible}: any) {
+function QuizAction({setAnswers, setIsResultVisible, setWrongIds}: any) {
   
   // 다시 풀기 버튼 클릭 시 이벤트
   const retryClick = () => {
-    // 초기화
+    // 정답 초기화
     setAnswers({})
+    // 틀린 id 초기화
+    setWrongIds([]);
     // 결과창 숨기기
     setIsResultVisible(false); 
   }
@@ -183,7 +206,7 @@ function Resultwrap({ isClicked, score, total }: any) {
   )
 }
 
-// 메인 단어어 문제 컴포넌트
+// 메인 단어 문제 컴포넌트
 function Wordwrap() {
 
   // 이전 컴포넌트에서 받아온 값 확인
@@ -199,9 +222,10 @@ function Wordwrap() {
   // 캐싱된 함수 전달
   const results = useAsync(cachefetchWords);
 
-    // 답안 상태 정의
+  // 답안 상태 정의
   const [ answers, setAnswers ] = useState<Record<number, string>>({});
   const [ isResultVisible , setIsResultVisible ] = useState<boolean>(false);
+  const [ wrongIds, setWrongIds ] = useState<number[]>([]);
 
   // result 상태에 따른 리턴값
   if (results.status === "pending") {
@@ -211,18 +235,20 @@ function Wordwrap() {
   if (results.status === "error") {
     return <div className='result'>{results.error.message}</div>;
   }  
+
+  // 함수 이용해서 맞춘 개수, 틀린 목록 받아오기
+  const { score, wrongIds: calculatedWrongIds } = results.status === "success"
+    ? calculateScore(results.data, answers, type)
+    : { score : 0, wrongIds: []};
   
   // 채점 버튼 클릭 시
   // 점수 계산 로직
   const handleScore = (event: React.FormEvent) => {
     event.preventDefault(); // 새로고침 방지!
+    setWrongIds(calculatedWrongIds) // 계산된 틀린 단어 id 상태에 저장
     setIsResultVisible(true);
   }
 
-  // 함수 이용해서 맞춘 개수 받아오기
-  const score = results.status === "success"
-    ? calculateScore(results.data, answers, type)
-    : 0;
     
   // 개별 input의 글자가 바뀔 때 id에 따라 값을 업데이트하는 함수
   const handleInputChange = (id: number, value: string) => {
@@ -246,12 +272,15 @@ function Wordwrap() {
             results={results}
             type={type}
             answers={answers}
+            wrongIds={wrongIds}
+            isResultVisible={isResultVisible}            
           />
 
           {/* 다시 풀기, 채점 버튼 영역 */}
           <QuizAction
             setAnswers={setAnswers}
             setIsResultVisible={setIsResultVisible}
+            setWrongIds={setWrongIds}
           />
 
         </div>

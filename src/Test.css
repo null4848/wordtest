@@ -45,6 +45,7 @@ strong {
   align-items: stretch;
   width: fit-content;
   height: fit-content;
+  margin-bottom: 30px;
 }
 
 .questionwrap {
@@ -53,30 +54,56 @@ strong {
 }
 
 .answerwrap {
-    width: auto;
-    height: auto;
+  width: auto;
+  height: auto;
+  position: relative;
 }
 
 .question, .answerinput {
-    width: 270px;
-    height: 50px;
-    margin-bottom: 10px;
-    align-content: center;
-    border-radius: 7px;
-    color: black;
+  width: 270px;
+  height: 50px;
+  margin-top: 15px;
+  margin-bottom: 15px;
+  align-content: center;
+  border-radius: 7px;
+  color: black;
+  font-size: 15px;
+  box-sizing: border-box;
 }
 
 .question {
-    background-color: #fafaf8;
-    border: 1px solid #344b47
+  background-color: #344b47;
+  border: 1px solid #fafaf8;
+  color: white;
+  text-align: center;
 }
 
 .answerinput {
-    background-color: #344b47;
-    border: 1px solid #fafaf8;
-    color: white;
-    padding: 10px;
-    text-align: center;
+  background-color: #fafaf8;
+  border: 1px solid #344b47;
+  padding: 10px;
+  text-align: center;
+}
+
+.wronginput {
+  background-color: #fafaf8;
+  border: 1px solid #ff3333;
+  color: white;
+  padding: 10px;
+  text-align: center;
+}
+
+
+.correctanswer {
+  position: absolute;
+  left: 0;
+  bottom: -11px;  
+  width: 100%;
+  color: #ff3333;
+  text-align: center;
+  font-size: 14px;
+  font-weight: bold;
+  pointer-events: none;
 }
 
 .scoreBtn, .retryBtn {
@@ -86,4 +113,6 @@ strong {
   border: 1px solid #344b47;
 }
 
-
+.resultwrap {
+  color: #222;
+}
