@@ -88,7 +88,7 @@ strong {
 .wronginput {
   background-color: #fafaf8;
   border: 1px solid #ff3333;
-  color: white;
+  color: #222;
   padding: 10px;
   text-align: center;
 }
