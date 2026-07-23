@@ -139,7 +139,15 @@ function Quizs({ handleInputChange, results, type, answers, wrongIds, isResultVi
                   type='text'
                   value={answers[result.id] || ''}
                   onChange={ (event) => handleInputChange(result.id, event.target.value)}
-                  />
+
+                  // 엔터 키 눌렀을 때 폼 제출 방지
+                  onKeyDown={(e) => {
+                    if (e.key === 'Enter') {
+                      e.preventDefault();
+                    }
+                  }}
+
+                />
                 
                 {isWrong && (
                   <div className='correctanswer'>
@@ -245,6 +253,19 @@ function Wordwrap() {
   // 점수 계산 로직
   const handleScore = (event: React.FormEvent) => {
     event.preventDefault(); // 새로고침 방지!
+
+    if (results.status !== "success") return;
+
+    // 유효성 검사
+    const isAllAnswered = results.data.every(
+      (item) => answers[item.id] && answers[item.id].trim() !== ""
+    );
+
+    if (!isAllAnswered) {
+      alert("모든 답안을 입력해주세요!")
+      return;
+    }
+
     setWrongIds(calculatedWrongIds) // 계산된 틀린 단어 id 상태에 저장
     setIsResultVisible(true);
   }
