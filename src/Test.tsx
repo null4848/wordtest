@@ -1,4 +1,4 @@
-import { useState, useEffect, useCallback } from 'react';
+import { useState, useEffect, useCallback, useRef } from 'react';
 import { useLocation } from 'react-router';
 import { type WordItem, words } from './data/wordData';
 
@@ -230,10 +230,13 @@ function Wordwrap() {
   // 캐싱된 함수 전달
   const results = useAsync(cachefetchWords);
 
-  // 답안 상태 정의
+  // 답안, 채점 상태 정의
   const [ answers, setAnswers ] = useState<Record<number, string>>({});
   const [ isResultVisible , setIsResultVisible ] = useState<boolean>(false);
   const [ wrongIds, setWrongIds ] = useState<number[]>([]);
+
+  // 점수 변수 정의
+  const scoreRef = useRef<number>(0);
 
   // result 상태에 따른 리턴값
   if (results.status === "pending") {
@@ -244,10 +247,6 @@ function Wordwrap() {
     return <div className='result'>{results.error.message}</div>;
   }  
 
-  // 함수 이용해서 맞춘 개수, 틀린 목록 받아오기
-  const { score, wrongIds: calculatedWrongIds } = results.status === "success"
-    ? calculateScore(results.data, answers, type)
-    : { score : 0, wrongIds: []};
   
   // 채점 버튼 클릭 시
   // 점수 계산 로직
@@ -265,6 +264,11 @@ function Wordwrap() {
       alert("모든 답안을 입력해주세요!")
       return;
     }
+
+    const { score: calculatedScore, wrongIds: calculatedWrongIds } = calculateScore(results.data, answers, type);
+
+    // 점수 변경
+    scoreRef.current = calculatedScore;
 
     setWrongIds(calculatedWrongIds) // 계산된 틀린 단어 id 상태에 저장
     setIsResultVisible(true);
@@ -309,7 +313,7 @@ function Wordwrap() {
         {/* 결과창 영역 */}
         <Resultwrap 
           isClicked={isResultVisible}
-          score={score}
+          score={scoreRef.current}
           total={results.data.length}
         />
 
